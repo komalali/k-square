@@ -17,3 +17,4 @@ In this repo I'm aiming to create a bare-bones outline of how I start a project,
 2. Clone this repo.
 3. `cd` into the main directory of the project and run `npm install`. This will install all the necessary dependencies for the project.
 4. Run `npm run build:watch`. This will start up the development server and direct you to the correct port on your local machine.
+5. There is a lot of stuff going on in this project that might seem confusing. For now, only focus on the `src` directory and the `index.html` file. You will write HTML in the `index.html` file, css in `src/index.css` and javascript in `src/index.js`.
