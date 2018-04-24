@@ -1,0 +1,22 @@
+svg {
+    background: lightgray;
+}
+
+.chart-container {
+    text-align: center;
+}
+
+.chart {
+    background: aliceblue;
+}
+
+.button {
+    color: blue;
+}
+
+.label {
+    fill: white;
+    font-family: sans-serif;
+    font-size: 11px;
+    text-anchor: middle;
+}
