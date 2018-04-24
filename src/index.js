@@ -11,7 +11,7 @@ function generateRandomDataset(numberOfDataPoints) {
   return dataPoints;
 }
 
-// Properties for our chart
+// Properties for our chart. ES6 uses const and let instead of var.
 const properties = {
   width: 800,
   height: 600,
@@ -30,7 +30,8 @@ const svg = d3.select('.chart')
   .attr('height', properties.height)
   .attr('width', properties.width);
 
-const xScale = d3.scaleBand() // instead of using scale.ordinal and then rangeBand, d3v4 has a scaleBand()
+// instead of using scale.ordinal and then rangeBand, d3v4 has a scaleBand()
+const xScale = d3.scaleBand()
   .rangeRound([0, properties.width])
   .domain(d3.range(properties.data.length));
 
@@ -59,7 +60,8 @@ svg.selectAll('text')
 
 function updateChart() {
   const data = generateRandomDataset(20);
-  const { height, labelOffset } = properties; // object-destructuring from ES6
+  // object-destructuring from ES6. equivalent to const height = properties.height;
+  const { height, labelOffset } = properties;
 
   svg.selectAll('rect')
     .data(data)
