@@ -5,10 +5,8 @@ In this repo I'm aiming to create a bare-bones outline of how I start a project,
 
 **Technologies we will use:**
 
-- Node.js: A Javascript runtime (a way to run JavaScript that isn’t limited to your browser).
-- [NPM](https://www.npmjs.com/get-npm): Used to stand for node package manager but now it doesn’t stand for anything. It’s essentially like pip or condo for python. 
+* Node.js: A Javascript runtime (a way to run JavaScript that isn’t limited to your browser).
+* [NPM](https://www.npmjs.com/get-npm): Used to stand for node package manager but now it doesn’t stand for anything. It’s essentially like pip or condo for python. 
 * [Babel](https://babeljs.io/): A Javascript compiler that transpiles modern JS to a browser compatible version. 
 * [ESLint](https://eslint.org/): A linter to keep your code standardized. 
-
-**Technologies we aren’t using yet:** 
-* [Webpack](https://webpack.js.org/): A code bundler. This allows you to create one bundled file from all your javascript and css files. We don’t have a need for this yet, and not using it demonstrates more clearly why it is helpful.
+* [Webpack](https://webpack.js.org/): A code bundler. This allows you to create one bundled file from all your javascript and css files. Instead of having lots of `<script>` and `<link>` tags for all your javascript and css in your html file, webpack will do all the bundling for you.
