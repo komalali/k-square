@@ -37,16 +37,16 @@ const xScale = d3.scaleBand()
 
 const yScale = d3.scaleLinear() // d3v4 syntax
   .domain([0, d3.max(properties.data)])
-  .range([0, properties.height]);
+  .range([properties.height, 0]);
 
 svg.selectAll('rect')
   .data(properties.data)
   .enter()
   .append('rect')
   .attr('x', (datum, index) => xScale(index))
-  .attr('y', datum => properties.height - yScale(datum)) // Arrow functions from ES6
+  .attr('y', datum => yScale(datum)) // Arrow functions from ES6
   .attr('width', xScale.bandwidth())
-  .attr('height', datum => yScale(datum))
+  .attr('height', datum => properties.height - yScale(datum))
   .attr('fill', datum => `rgb(0, 0, ${datum * 10})`); // Template-literals from ES6
 
 svg.selectAll('text')
@@ -56,7 +56,7 @@ svg.selectAll('text')
   .attr('class', 'label')
   .text(datum => datum)
   .attr('x', (datum, index) => xScale(index) + xScale.bandwidth() / 2)
-  .attr('y', datum => properties.height - yScale(datum) + properties.labelOffset);
+  .attr('y', datum => yScale(datum) + properties.labelOffset);
 
 function updateChart() {
   const data = generateRandomDataset(20);
@@ -67,8 +67,8 @@ function updateChart() {
     .data(data)
     .transition()
     .duration(500)
-    .attr('y', datum => height - yScale(datum))
-    .attr('height', datum => yScale(datum))
+    .attr('y', datum => yScale(datum))
+    .attr('height', datum => height - yScale(datum))
     .attr('fill', datum => `rgb(0, 0, ${datum * 10})`);
 
   svg.selectAll('text')
@@ -77,7 +77,7 @@ function updateChart() {
     .duration(500)
     .text(datum => datum)
     .attr('x', (datum, index) => xScale(index) + xScale.bandwidth() / 2)
-    .attr('y', datum => height - yScale(datum) + labelOffset);
+    .attr('y', datum => yScale(datum) + labelOffset);
 }
 
 d3.select('.button')
