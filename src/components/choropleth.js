@@ -11,9 +11,9 @@ export default class Choropleth {
     const defaultProps = {
       animation: 750,
       containerDivId: 'chart',
-      height: 600,
+      height: 540,
       topologyUrl: './topo.json',
-      width: 800,
+      width: 1000,
       zoomPadding: {
         bottom: 10,
         left: 10,
@@ -29,7 +29,6 @@ export default class Choropleth {
     const { topologyUrl } = this.props;
 
     this.props.topology = await d3.json(topologyUrl);
-    console.log(this.props.topology);
   }
 
   renderMap() {
@@ -48,6 +47,7 @@ export default class Choropleth {
       admin0_disputes: extractFeatures(topology, 'admin0_disputes'),
       admin1: extractFeatures(topology, 'admin1'),
       admin1_disputes: extractFeatures(topology, 'admin1_disputes'),
+      mesh: topojson.mesh(topology, topology.objects.admin0),
     };
 
     this.svg = this.container
@@ -61,10 +61,16 @@ export default class Choropleth {
       .append('g')
       .attr('class', 'map');
 
+    this.mapGroup
+      .append('g')
+      .attr('class', 'mesh')
+      .append('path')
+      .attr('d', this.path(features.mesh));
+
     this.buildLayer(features.admin0, 'admin0', 'country');
-    this.buildLayer(features.admin0_disputes, 'disputes', 'dispute');
+    this.buildLayer(features.admin0_disputes, 'admin0_disputes', 'dispute');
     this.buildLayer(features.admin1, 'admin1', 'subnat');
-    this.buildLayer(features.admin1_disputes, 'disputes', 'dispute');
+    this.buildLayer(features.admin1_disputes, 'admin1_disputes', 'dispute');
   }
 
   buildLayer(featureLayer, layerClassName, className) {

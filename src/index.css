@@ -38,17 +38,24 @@ svg {
     overflow: hidden;
 }
 
-.country {
-    stroke: lightgray;
+.mesh {
+    stroke: lightblue;
     stroke-width: 1px;
+    fill:white;
+}
+
+.country {
+    stroke: none;
+    fill:none;
+    pointer-events: fill;
 }
 
 .dispute {
-    stroke: lightgray;
-    stroke-width: 1px;
+    stroke: none;
+    fill: none;
 }
 
 .subnat {
-    stroke: lightcoral;
-    stroke-width: 1px;
+    stroke: none;
+    fill: none;
 }
