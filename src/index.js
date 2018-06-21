@@ -1,15 +1,18 @@
 import './index.css';
 
-import generateRandomDataset from './utils';
-import createBarChart from './components/barChart';
+import Choropleth from './components/choropleth';
 
 // Properties for our chart. ES6 uses const and let instead of var.
-const properties = {
-  width: 800,
-  height: 600,
-  barPadding: 1,
-  data: generateRandomDataset(20),
-  labelOffset: 14,
+const mapProps = {
+  containerDivId: 'chart',
 };
 
-createBarChart(properties);
+const boundingRect = document.getElementById(mapProps.containerDivId)
+  .getBoundingClientRect();
+
+mapProps.width = boundingRect.width - 30;
+mapProps.height = boundingRect.height - 30;
+
+// createBarChart(properties);
+const map = new Choropleth(mapProps);
+map.render();

@@ -8,7 +8,8 @@ const HTMLWebpackPluginConfig = new HTMLWebpackPlugin({
 });
 
 module.exports = {
-  entry: './src/index.js',
+  devtool: 'inline-source-map',
+  entry: ['babel-polyfill', './src/index.js'],
   output: {
     filename: 'bundle.js',
     path: path.resolve(__dirname, 'dist'),
@@ -22,6 +23,7 @@ module.exports = {
           loader: 'babel-loader',
           options: {
             presets: ['babel-preset-env'],
+            plugins: ['transform-async-to-generator'],
           },
         },
       },

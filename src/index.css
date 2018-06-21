@@ -1,13 +1,5 @@
 svg {
-    background: lightgray;
-}
-
-.chart-container {
-    text-align: center;
-}
-
-.chart {
-    background: aliceblue;
+    background: white;
 }
 
 .button {
@@ -19,4 +11,29 @@ svg {
     font-family: sans-serif;
     font-size: 11px;
     text-anchor: middle;
+}
+
+#page {
+    position: absolute;
+    top: 5px;
+    bottom: 10px;
+    left: 10px;
+    right: 10px;
+    display: flex;
+    flex-direction: column;
+}
+
+#chart-container {
+    display: flex;
+    flex: 1;
+    text-align: center;
+}
+
+#chart {
+    display:flex;
+    flex: 1 1 1000px;
+    justify-content: center;
+    align-items: center;
+    background: lightgray;
+    overflow: hidden;
 }
