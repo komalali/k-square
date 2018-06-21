@@ -37,3 +37,18 @@ svg {
     background: lightgray;
     overflow: hidden;
 }
+
+.country {
+    stroke: lightgray;
+    stroke-width: 1px;
+}
+
+.dispute {
+    stroke: lightgray;
+    stroke-width: 1px;
+}
+
+.subnat {
+    stroke: lightcoral;
+    stroke-width: 1px;
+}

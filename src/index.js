@@ -2,10 +2,12 @@ import './index.css';
 
 import Choropleth from './components/choropleth';
 
-// Properties for our chart. ES6 uses const and let instead of var.
+// Properties for the map.
 const mapProps = {
   containerDivId: 'chart',
+  topologyUrl: 'src/resources/world-topo.json',
 };
+
 
 const boundingRect = document.getElementById(mapProps.containerDivId)
   .getBoundingClientRect();
@@ -13,6 +15,5 @@ const boundingRect = document.getElementById(mapProps.containerDivId)
 mapProps.width = boundingRect.width - 30;
 mapProps.height = boundingRect.height - 30;
 
-// createBarChart(properties);
 const map = new Choropleth(mapProps);
 map.render();

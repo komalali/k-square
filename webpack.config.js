@@ -23,7 +23,11 @@ module.exports = {
           loader: 'babel-loader',
           options: {
             presets: ['babel-preset-env'],
-            plugins: ['transform-async-to-generator'],
+            plugins: [
+              'transform-async-to-generator',
+              'transform-object-rest-spread',
+              'transform-es2015-spread',
+            ],
           },
         },
       },
