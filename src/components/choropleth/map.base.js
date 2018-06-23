@@ -1,7 +1,7 @@
-import d3 from 'd3';
+import * as d3 from 'd3';
 import Emitter from 'events';
 
-import * as util from './util';
+import * as util from '../../util';
 
 /**
  * Initialize a new `MapBase`.
@@ -42,12 +42,8 @@ export default class MapBase extends Emitter {
       },
       filter: [false, false],
       style: {
-        fill: (feature) => {
-          return this.color(feature);
-        },
-        stroke: (feature) => {
-          return this.color(feature);
-        },
+        fill: feature => this.color(feature),
+        stroke: feature => this.color(feature),
       },
     };
 
@@ -58,7 +54,7 @@ export default class MapBase extends Emitter {
       '-': util.copy(this.settings.colors).reverse(),
     };
 
-    this.colorize = d3.scale.linear()
+    this.colorize = d3.scaleLinear()
       .range(this.colors[this.settings.scale.direction])
       .clamp(true);
   }
@@ -75,7 +71,9 @@ export default class MapBase extends Emitter {
     const { animation = 0 } = this.settings;
 
     if (animate && animation > 0) {
-      return selection.transition().duration(animation);
+      return selection
+        .transition()
+        .duration(animation);
     }
     return selection;
   }
@@ -108,26 +106,26 @@ export default class MapBase extends Emitter {
 
   styles(selection, initial = false) {
     return selection.style({
-      fill: (featrue) => {
-        const { style } = featrue.layer;
+      fill: (feature) => {
+        const { style } = feature.layer;
 
         const fill = (style.fill instanceof Function) ?
-          style.fill.apply(this, [featrue, initial]) :
+          style.fill.apply(this, [feature, initial]) :
           style.fill;
 
-        featrue.style = featrue.style || {};
-        featrue.style.fill = fill;
+        feature.style = feature.style || {};
+        feature.style.fill = fill;
         return fill;
       },
-      stroke: (featrue) => {
-        const { style } = featrue.layer;
+      stroke: (feature) => {
+        const { style } = feature.layer;
 
         const stroke = (style.stroke instanceof Function) ?
-          style.stroke.apply(this, [featrue, initial]) :
+          style.stroke.apply(this, [feature, initial]) :
           style.stroke;
 
-        featrue.style = featrue.style || {};
-        featrue.style.stroke = stroke;
+        feature.style = feature.style || {};
+        feature.style.stroke = stroke;
         return stroke;
       },
     });
@@ -329,9 +327,8 @@ export default class MapBase extends Emitter {
       if (layer.extent) {
         ({ extent } = layer);
       } else if (layer.data) {
-        extent = d3.extent(d3.values(layer.data).map(({ value }) => {
-          return value;
-        }));
+        extent = d3.extent(d3.values(layer.data)
+          .map(({ value }) => value));
       }
 
       return results.concat(extent);
