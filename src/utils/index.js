@@ -11,5 +11,5 @@ export function generateRandomDataset(numberOfDataPoints) {
 }
 
 export function extractFeatures(topology, featureLayer) {
-  return topojson.feature(topology, topology.objects[featureLayer]).features;
+  return topojson.feature(topojson.presimplify(topology), topology.objects[featureLayer]).features;
 }
