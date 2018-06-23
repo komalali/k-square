@@ -1,7 +1,10 @@
-import d3 from 'd3';
-import { merge, isEqual } from 'lodash';
+import * as d3 from 'd3';
+import {
+  isEqual,
+  merge,
+} from 'lodash';
 
-import MapBase from '../components/map.base';
+import MapBase from './map.base';
 
 /**
  * Initialize a new `MapChart`.
@@ -36,13 +39,14 @@ export default class MapChart extends MapBase {
       area: 1,
       scale: 1,
       translate: [0, 0],
-      clip: d3.geo.clipExtent(),
-      bounds: d3.geo.path().projection(d3.geo.transform({
-        point(x, y, z) {
-          this.stream.point(x, y, z);
-        },
-      })).bounds,
-      simplify: d3.geo.transform({
+      clip: d3.geoIdentity().clipExtent(),
+      bounds: d3.geoPath()
+        .projection(d3.geoTransform({
+          point(x, y, z) {
+            this.stream.point(x, y, z);
+          },
+        })).bounds,
+      simplify: d3.geoTransform({
         point(x, y, z) {
           if (z >= projection.area) {
             this.stream.point(
@@ -53,7 +57,7 @@ export default class MapChart extends MapBase {
           }
         },
       }),
-      path: d3.geo.path().projection({
+      path: d3.geoPath().projection({
         stream(s) {
           return projection.simplify.stream(projection.clip.stream(s));
         },
@@ -149,10 +153,9 @@ export default class MapChart extends MapBase {
     } = options;
 
     return (proportion / Math.max(
-        Math.abs(bounds[1][0] - bounds[0][0]) / width,
-        Math.abs(bounds[1][1] - bounds[0][1]) / height,
-      )
-    );
+      Math.abs(bounds[1][0] - bounds[0][0]) / width,
+      Math.abs(bounds[1][1] - bounds[0][1]) / height,
+    ));
   }
 
   /**
@@ -191,7 +194,7 @@ export default class MapChart extends MapBase {
         width: this.settings.width,
       });
 
-    this.zoomed = d3.behavior.zoom()
+    this.zoomed = d3.zoom()
       .on('zoom', () => {
         this.projection.scale = this.zoomed.scale();
         this.projection.translate = this.zoomed.translate();
@@ -226,32 +229,25 @@ export default class MapChart extends MapBase {
     const { animate = true } = options;
 
     if (newLayers !== undefined) {
-      const currentKeys = currentLayers.map(({ key }) => {
-        return key;
-      });
-      const newKeys = newLayers.map(({ key }) => {
-        return key;
-      });
+      const currentKeys = currentLayers.map(({ key }) => key);
+      const newKeys = newLayers.map(({ key }) => key);
 
       if (!isEqual(currentKeys, newKeys)) {
         this.viewbox = this.calcViewbox(newLayers);
       }
 
-      this.layers = this.svg.selectAll('.layer')
+      this.layers = this.svg
+        .selectAll('.layer')
         .data(newLayers.map((layer) => {
           layer.style = merge({}, this.settings.style, layer.style);
           return layer;
-        }), ({ key }) => {
-          return key;
-        });
+        }), ({ key }) => key);
 
       const enter = this.layers.enter();
       const exit = this.layers.exit();
 
       enter.append('g')
-        .attr('class', ({ key }) => {
-          return `layer layer-${key}`;
-        })
+        .attr('class', ({ key }) => `layer layer-${key}`)
         .style('opacity', 0);
 
       this.transition(exit, animate)
@@ -284,25 +280,22 @@ export default class MapChart extends MapBase {
         feature.data = data[key] || {};
         return feature;
       });
-    }, (d) => {
-      return d.properties.key || d.properties[this.settings.key];
-    });
+    }, d => d.properties.key || d.properties[this.settings.key]);
 
-    this.paths.enter()
+    this.paths
+      .enter()
       .append('path')
       .attr({
-        class: (d) => {
-          return this.classes(d).join(' ');
-        },
+        class: d => this.classes(d).join(' '),
         d: this.projection.path,
       }).call(this.styles.bind(this), true);
 
-    this.paths.exit().remove();
+    this.paths
+      .exit()
+      .remove();
 
     this.transition(this.paths, animate)
-      .attr('class', (d) => {
-        return this.classes(d).join(' ');
-      })
+      .attr('class', d => this.classes(d).join(' '))
       .call(this.styles.bind(this));
 
     this.resize(this.settings.width, this.settings.height);
@@ -393,12 +386,12 @@ export default class MapChart extends MapBase {
           locations = ((location instanceof Array) ? location : [location]).map(Number);
         }
 
-        const features = this.layers.data().reduce((results, layer) => {
-          return results.concat(layer.shape.features.filter((feature) => {
-            return feature.properties[this.settings.key] &&
-              locations.includes(feature.properties[this.settings.key]);
-          }));
-        }, []);
+        const features = this.layers
+          .data()
+          .reduce((results, layer) => results
+            .concat(layer.shape.features
+              .filter(feature => feature.properties[this.settings.key] &&
+              locations.includes(feature.properties[this.settings.key]))), []);
 
         if (features.length) {
           bounds = this.calcBounds(features);
@@ -414,8 +407,12 @@ export default class MapChart extends MapBase {
     scale = Math.max(extent[0], Math.min(scale, extent[1]));
     translate = this.calcTranslate({ scale, center });
 
-    this.svg.transition()
+    this.svg
+      .transition()
       .duration(this.settings.animation)
-      .call(this.zoomed.scale(scale).translate(translate).event);
+      .call(this.zoomed
+        .scale(scale)
+        .translate(translate)
+        .event);
   }
 }
