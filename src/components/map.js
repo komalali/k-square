@@ -1,9 +1,14 @@
 import * as topojson from 'topojson';
-import { merge, intersection, isEqual, memoize } from 'lodash';
+import {
+  merge,
+  intersection,
+  isEqual,
+  memoize,
+} from 'lodash';
 
 import MapChart from './choropleth/map.chart';
-import MapLegend from '../legends/map.legend';
-import MapFilter from './map.filter';
+import MapLegend from './choropleth/map.legend';
+import MapFilter from './choropleth/map.filter';
 
 export default class Map {
   constructor(settings, topology) {
@@ -34,10 +39,10 @@ export default class Map {
       });
 
       this.components.filter.on('filter', ({
-                                             values: newValues,
-                                             domain: newDomain,
-                                             action,
-                                           }) => {
+        values: newValues,
+        domain: newDomain,
+        action,
+      }) => {
         const values = this.filter();
         const domain = this.domain();
 
@@ -61,9 +66,10 @@ export default class Map {
       });
     }
 
-    this.feature = memoize((layer) => {
-      return topojson.feature(this.topology, layer.topology);
-    }, (layer) => { return layer.topology; });
+    this.feature = memoize(
+      layer => topojson.feature(this.topology, layer.topology),
+      layer => layer.topology,
+    );
   }
 
   on(event, fn) {
@@ -74,7 +80,10 @@ export default class Map {
 
   render(options) {
     const {
-      layers, selected, direction, extent,
+      layers,
+      selected,
+      direction,
+      extent,
     } = options;
 
     if (layers) {
