@@ -1,7 +1,7 @@
 import * as topojson from 'topojson';
 import { merge, intersection, isEqual, memoize } from 'lodash';
 
-import MapChart from '../charts/map';
+import MapChart from './choropleth/map.chart';
 import MapLegend from '../legends/map.legend';
 import MapFilter from './map.filter';
 
