@@ -1,7 +1,10 @@
 import $ from 'jquery';
-import d3 from 'd3';
+import * as d3 from 'd3';
 import Emitter from 'events';
-import { merge, isEqual } from 'lodash';
+import {
+  isEqual,
+  merge,
+} from 'lodash';
 
 import Controls from './controls';
 
@@ -13,9 +16,7 @@ export default class MapFilter extends Emitter {
       extent: [0, 1],
       values: [false, false],
       domain: [false, false],
-      format: (value) => {
-        return value;
-      },
+      format: value => value,
     };
 
     this.settings = merge({}, defaults, settings);
@@ -45,7 +46,7 @@ export default class MapFilter extends Emitter {
 
             const filterControlId = this.filter.getHTMLid(this.filter.controls.filter, 'control');
 
-            const scale = d3.scale.linear()
+            const scale = d3.scaleLinear()
               .domain([0, 1])
               .range(extent);
 
