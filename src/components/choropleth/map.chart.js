@@ -39,7 +39,7 @@ export default class MapChart extends MapBase {
       area: 1,
       scale: 1,
       translate: [0, 0],
-      clip: d3.geoIdentity().clipExtent(),
+      clipExtent: d3.geoClipRectangle(),
       bounds: d3.geoPath()
         .projection(d3.geoTransform({
           point(x, y, z) {
@@ -188,11 +188,10 @@ export default class MapChart extends MapBase {
    * @access public
    */
   render(options) {
-    this.svg = d3.select(this.settings.container).append('svg')
-      .attr({
-        height: this.settings.height,
-        width: this.settings.width,
-      });
+    this.svg = d3.select(this.settings.container)
+      .append('svg')
+      .attr('height', this.settings.height)
+      .attr('width', this.settings.width);
 
     this.zoomed = d3.zoom()
       .on('zoom', () => {
@@ -285,10 +284,9 @@ export default class MapChart extends MapBase {
     this.paths
       .enter()
       .append('path')
-      .attr({
-        class: d => this.classes(d).join(' '),
-        d: this.projection.path,
-      }).call(this.styles.bind(this), true);
+      .attr('class', d => this.classes(d).join(' '))
+      .attr('d', this.projection.path);
+      // .call(this.styles.bind(this), true);
 
     this.paths
       .exit()
@@ -298,7 +296,7 @@ export default class MapChart extends MapBase {
       .attr('class', d => this.classes(d).join(' '))
       .call(this.styles.bind(this));
 
-    this.resize(this.settings.width, this.settings.height);
+    // this.resize(this.settings.width, this.settings.height);
 
     this.nodes = this.paths;
 
@@ -342,15 +340,15 @@ export default class MapChart extends MapBase {
 
     this.zoomed.scaleExtent(extent);
 
-    this.projection.clip.extent([[-5, -5], [(width + 10), (height + 10)]]);
+    this.projection.clipExtent([[-5, -5], [(width + 10), (height + 10)]]);
 
     scale = Math.max(extent[0], Math.min(scale, extent[1]));
     translate = this.calcTranslate({ scale, center });
 
-    this.svg.attr({
-      height,
-      width,
-    }).call(this.zoomed.translate(translate).scale(scale))
+    this.svg
+      .attr('height')
+      .attr('width')
+      .call(this.zoomed.translate(translate).scale(scale))
       .call(this.zoomed.event);
   }
 

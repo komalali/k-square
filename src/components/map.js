@@ -8,7 +8,7 @@ import {
 
 import MapChart from './choropleth/map.chart';
 import MapLegend from './choropleth/map.legend';
-import MapFilter from './choropleth/map.filter';
+// import MapFilter from './choropleth/map.filter';
 
 export default class Map {
   constructor(settings, topology) {
@@ -66,10 +66,32 @@ export default class Map {
       });
     }
 
-    this.feature = memoize(
-      layer => topojson.feature(this.topology, layer.topology),
-      layer => layer.topology,
-    );
+    this.feature = memoize((layer) => {
+      return topojson.feature(this.topology, layer.topology);
+    }, layer => layer.topology);
+
+    this.mesh = memoize((objects, filterFunction) => {
+      return topojson.mesh(this.topology, objects, (...geoms) => {
+        const allDisputes = [];
+        const allKeys = [];
+
+        geoms.forEach(({ properties: { disputes = [], location_id } }) => {
+          if (disputes.length) {
+            allDisputes.push(...disputes);
+          } else {
+            allKeys.push(location_id);
+          }
+        });
+
+        return filterFunction(geoms, allKeys, allDisputes);
+      });
+    }, ({ geometries, filter: filterType }) => {
+      return geometries.reduce((results, geometry) => {
+        return results.concat(geometry.geometries.map(({ properties: { key } }) => {
+          return key;
+        }));
+      }, [filterType]).join();
+    });
   }
 
   on(event, fn) {
@@ -80,10 +102,7 @@ export default class Map {
 
   render(options) {
     const {
-      layers,
-      selected,
-      direction,
-      extent,
+      layers, selected, direction, extent,
     } = options;
 
     if (layers) {
@@ -196,65 +215,74 @@ export default class Map {
   }
 
   layers(layers, selected) {
-    const objects = {
-      type: 'GeometryCollection',
-      geometries: [],
-    };
+    const geometries = layers.map((layer) => { return layer.topology; });
 
     return layers.map((layer) => {
-      objects.geometries.push(layer.topology);
       return {
         ...layer,
         shape: this.feature(layer),
       };
-    }).concat(this.meshLayers(objects, selected));
+    }).concat([{
+      key: 'borders',
+      shape: {
+        type: 'FeatureCollection',
+        features: [
+          this.meshLayer('borders', geometries),
+          this.meshLayer('disputed-borders', geometries),
+          this.meshLayer('selected', geometries, selected),
+        ],
+      },
+    }]);
   }
 
-  meshLayers(objects, selected = []) {
-    const mesh = topojson.meshes(this.topology, objects, (...matches) => {
-      const disputes = [];
-      const keys = [];
-      const tags = ['borders'];
+  meshLayer(type, geometries, selected = []) {
+    const filter = {
+      borders: (geoms, keys, disputes) => {
+        return !(geoms.length !== 1 && intersection(disputes, keys).length);
+      },
+      'disputed-borders': (geoms, keys, disputes) => {
+        return geoms.length !== 1 && intersection(disputes, keys).length;
+      },
+      selected: (geoms, keys, disputes) => {
+        const selectedKeysIntersect = Boolean(intersection(selected, keys).length);
+        const selectedDisputesIntersect = Boolean(intersection(selected, disputes).length);
 
-      matches.forEach(({ properties }) => {
-        if (properties.disputes && properties.disputes.length) {
-          disputes.push(...properties.disputes);
-        } else {
-          keys.push(properties.location_id);
-        }
+        return (
+          (selectedKeysIntersect && !selectedDisputesIntersect) ||
+          (!selectedKeysIntersect && selectedDisputesIntersect)
+        );
+      },
+    };
+
+    const objects = {
+      type: 'GeometryCollection',
+      geometries,
+    };
+
+    if (type === 'selected') {
+      objects.geometries = objects.geometries.map((geometry) => {
+        return {
+          ...geometry,
+          geometries: geometry.geometries.filter(({
+            properties: {
+              location_id,
+              disputes = [],
+            },
+          }) => selected.includes(location_id) || disputes.length),
+        };
       });
+    }
 
-      const disputesIntersect = Boolean(intersection(disputes, keys).length);
-      const selectedKeysIntersect = Boolean(intersection(selected, keys).length);
-      const selectedDisputesIntersect = Boolean(intersection(selected, disputes).length);
+    objects.filter = type;
 
-      if (matches.length !== 1 && disputesIntersect) {
-        tags.push('disputed');
-      }
+    const mesh = this.mesh(objects, filter[type]);
 
-      if ((selectedKeysIntersect && !selectedDisputesIntersect)
-        || (!selectedKeysIntersect && selectedDisputesIntersect)
-      ) {
-        tags.push('selected');
-      }
+    mesh.properties = {
+      key: type,
+      class: type,
+    };
 
-      return tags.join(' ');
-    });
-
-    mesh.features = mesh.features.map((feature) => {
-      const { tag } = feature.properties;
-      return {
-        ...feature,
-        properties: {
-          key: tag,
-          class: tag,
-        },
-      };
-    });
-
-    return [{
-      key: 'borders',
-      shape: mesh,
-    }];
+    return mesh;
   }
 }
+

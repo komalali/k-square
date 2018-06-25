@@ -1,19 +1,34 @@
+import { json } from 'd3';
 import './index.css';
 
-import Choropleth from './components/choropleth';
+import Map from './components/map';
 
-// Properties for the map.
-const mapProps = {
-  containerDivId: 'chart',
-  topologyUrl: 'src/resources/world-topo.json',
+async function fetchTopoJson(topologyUrl) {
+  return json(topologyUrl);
+}
+
+const mapSettings = {
+  chart: {
+    container: '#chart',
+    height: 500,
+    width: 1000,
+  },
 };
 
+fetchTopoJson('src/resources/world-topo.json').then((topology) => {
+  console.log(topology);
+  const map = new Map(mapSettings, topology);
 
-const boundingRect = document.getElementById(mapProps.containerDivId)
-  .getBoundingClientRect();
-//
-// mapProps.width = boundingRect.width - 30;
-// mapProps.height = boundingRect.height - 30;
+  const mapRenderOptions = {
+    layers: [
+      {
+        key: 'admin0',
+        topology: topology.objects.admin0,
+        extent: [-Infinity, Infinity],
+      },
+    ],
+  };
 
-const map = new Choropleth(mapProps);
-map.render();
+  map.render(mapRenderOptions);
+});
+

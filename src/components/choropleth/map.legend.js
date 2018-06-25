@@ -1,7 +1,7 @@
-import d3 from 'd3';
+import * as d3 from 'd3';
 
-import * as util from '../components/util';
-import MapBase from '../components/map.base';
+import * as util from '../../util';
+import MapBase from './map.base';
 
 /**
  * Initialize a new `MapLegend`.
@@ -63,7 +63,7 @@ export default class MapLegend extends MapBase {
         width: this.settings.width,
       });
 
-    this.scale = d3.scale.linear()
+    this.scale = d3.scaleLinear()
       .range([0, this.settings.width - (this.settings.margin.right + this.settings.margin.left)]);
 
     this.axis = d3.svg.axis()
