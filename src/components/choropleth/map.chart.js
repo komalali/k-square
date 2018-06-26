@@ -285,12 +285,11 @@ export default class MapChart extends MapBase {
       .enter()
       .append('path')
       .attr('class', d => this.classes(d).join(' '))
-      .attr('d', this.projection.path);
-      // .call(this.styles.bind(this), true);
+      .attr('d', this.projection.path)
+      .call(this.styles.bind(this), true);
 
-    this.paths
-      .exit()
-      .remove();
+    this.transition(this.paths.exit(), animate)
+      .style('opacity', 0).remove();
 
     this.transition(this.paths, animate)
       .attr('class', d => this.classes(d).join(' '))

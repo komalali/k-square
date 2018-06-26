@@ -105,8 +105,8 @@ export default class MapBase extends Emitter {
    */
 
   styles(selection, initial = false) {
-    return selection.style({
-      fill: (feature) => {
+    return selection
+      .style('fill', (feature) => {
         const { style } = feature.layer;
 
         const fill = (style.fill instanceof Function) ?
@@ -116,8 +116,8 @@ export default class MapBase extends Emitter {
         feature.style = feature.style || {};
         feature.style.fill = fill;
         return fill;
-      },
-      stroke: (feature) => {
+      })
+      .style('stroke', (feature) => {
         const { style } = feature.layer;
 
         const stroke = (style.stroke instanceof Function) ?
@@ -127,8 +127,7 @@ export default class MapBase extends Emitter {
         feature.style = feature.style || {};
         feature.style.stroke = stroke;
         return stroke;
-      },
-    });
+      });
   }
 
   classes(feature) {
