@@ -33,11 +33,11 @@ export function createLayers(options = {}) {
       let min = Infinity;
       let max = -Infinity;
 
-      const data = dataset.reduce((geoResult, row) => {
-        geoResult[row.location_id] = row.value;
+      const data = dataset.reduce((geoResult, { location_id, value }) => {
+        geoResult[location_id] = value;
 
-        if (row.value < min) min = row.value;
-        if (row.value > max) max = row.value;
+        if (value < min) min = value;
+        if (value > max) max = value;
 
         return geoResult;
       }, {});

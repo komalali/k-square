@@ -39,7 +39,7 @@ export default class MapChart extends MapBase {
       area: 1,
       scale: 1,
       translate: [0, 0],
-      clipExtent: d3.geoClipRectangle(),
+      clipExtent: d3.geoClipExtent(),
       bounds: d3.geoPath()
         .projection(d3.geoTransform({
           point(x, y, z) {
@@ -59,7 +59,7 @@ export default class MapChart extends MapBase {
       }),
       path: d3.geoPath().projection({
         stream(s) {
-          return projection.simplify.stream(projection.clip.stream(s));
+          return projection.simplify.stream(projection.clipExtent.stream(s));
         },
       }),
     };
@@ -240,16 +240,13 @@ export default class MapChart extends MapBase {
         .data(newLayers.map((layer) => {
           layer.style = merge({}, this.settings.style, layer.style);
           return layer;
-        }), ({ key }) => key);
-
-      const enter = this.layers.enter();
-      const exit = this.layers.exit();
-
-      enter.append('g')
+        }), ({ key }) => key)
+        .enter()
+        .append('g')
         .attr('class', ({ key }) => `layer layer-${key}`)
         .style('opacity', 0);
 
-      this.transition(exit, animate)
+      this.transition(this.layers.exit(), animate)
         .style('opacity', 0)
         .remove();
 
@@ -258,7 +255,8 @@ export default class MapChart extends MapBase {
       this.transition(this.layers, animate)
         .style('opacity', 1);
 
-      this.data = this.layers.data();
+      this.data = this.layers
+        .data();
 
       this.paths = this.layers.selectAll('path');
     }
