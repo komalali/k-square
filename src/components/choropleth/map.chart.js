@@ -265,21 +265,20 @@ export default class MapChart extends MapBase {
       .range(this.colors[this.settings.scale.direction])
       .domain(this.domain());
 
-    this.paths = this.paths.data((layer) => {
-      if (!layer.shape || !layer.shape.features) return [];
+    this.paths = this.paths
+      .data((layer) => {
+        if (!layer.shape || !layer.shape.features) return [];
 
-      const data = layer.data || {};
+        const data = layer.data || {};
 
-      return layer.shape.features.map((feature) => {
-        const key = feature.properties[this.settings.key] || feature.properties.key;
+        return layer.shape.features.map((feature) => {
+          const key = feature.properties[this.settings.key] || feature.properties.key;
 
-        feature.layer = layer;
-        feature.data = data[key] || {};
-        return feature;
-      });
-    }, d => d.properties.key || d.properties[this.settings.key]);
-
-    this.paths
+          feature.layer = layer;
+          feature.data = data[key] || {};
+          return feature;
+        });
+      }, d => d.properties.key || d.properties[this.settings.key])
       .enter()
       .append('path')
       .attr('class', d => this.classes(d).join(' '))

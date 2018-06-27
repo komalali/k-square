@@ -3,7 +3,7 @@ import { csv, json } from 'd3';
 import './index.css';
 
 import Map from './components/map';
-import { createLayers } from './utils';
+import { createLayers, processTopojson } from './utils';
 
 async function fetchTopoJson(topologyUrl) {
   return json(topologyUrl);
@@ -37,6 +37,8 @@ fetch()
   .then(({ dataset, topology }) => {
     console.log(topology);
     console.log(dataset);
+    processTopojson(topology);
+    console.log(topology);
     console.log(createLayers({ detail: 1, dataset, topo: topology }));
     const map = new Map(mapSettings, topology);
 
