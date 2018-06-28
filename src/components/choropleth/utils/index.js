@@ -1,19 +1,119 @@
 import * as topojson from 'topojson';
 import { reduce } from 'lodash';
 
-// Make this a function so it can be easily reused when updating the chart.
-export function generateRandomDataset(numberOfDataPoints) {
-  const dataPoints = [];
-  for (let i = 0; i < numberOfDataPoints; i++) {
-    const randomNumber = Math.floor(Math.random() * 21) + 5;
-    dataPoints.push(randomNumber);
-  }
-  return dataPoints;
-}
+export const copy = (source) => {
+  let result;
+  let list;
+  let type;
+  let key;
+  let i;
+  let l;
 
-export function extractFeatures(topology, featureLayer) {
-  return topojson.feature(topojson.presimplify(topology), topology.objects[featureLayer]).features;
-}
+  if (!source || !(source instanceof Object)) {
+    return source;
+  }
+
+  if ((source instanceof Array)) {
+    type = 'array';
+    result = [];
+    list = source;
+  } else {
+    type = 'object';
+    result = {};
+    list = Object.keys(source);
+  }
+
+  for (i = 0, l = list.length; i < l; ++i) {
+    key = (type === 'object') ? list[i] : i;
+    result[key] = copy(source[key]);
+  }
+
+  return result;
+};
+
+export const merge = (...items) => {
+  let keys;
+  let key;
+  let src;
+  const dst = {};
+  let a;
+  let al;
+  let k;
+  let kl;
+  for (a = 0, al = items.length; a < al; ++a) {
+    src = items[a];
+    if ((src instanceof Object)
+      && !(src instanceof Array)
+      && !(src instanceof Function)
+    ) {
+      keys = Object.keys(src);
+      for (k = 0, kl = keys.length; k < kl; ++k) {
+        key = keys[k];
+        if ((src[key] instanceof Object)
+          && !(src[key] instanceof Array)
+          && !(src[key] instanceof Function)
+        ) {
+          dst[key] = merge(dst[key] || {}, src[key]);
+        } else dst[key] = src[key];
+      }
+    }
+  }
+  return dst;
+};
+
+export const intersect = (x, y) => {
+  const ret = [];
+  let a;
+  let b;
+
+  if (x.length > y.length) {
+    a = y;
+    b = x;
+  } else {
+    a = x;
+    b = y;
+  }
+
+  for (let i = 0, al = a.length; i < al; ++i) {
+    for (let z = 0, bl = b.length; z < bl; ++z) {
+      if (a[i] === b[z]) {
+        ret.push(a[i]);
+        break;
+      }
+    }
+  }
+
+  return ret;
+};
+
+export const doesIntersect = (a, b) => {
+  if (a instanceof Array && b instanceof Array) {
+    return intersect(a, b).length !== 0;
+  }
+
+  if (a instanceof Array) {
+    return b.includes(a);
+  }
+
+  if (b instanceof Array) {
+    return a.includes(b);
+  }
+
+  return (a.length <= b.length) ? b.includes(a) : a.includes(b);
+};
+
+export const range = (start, stop, steps) => {
+  const min = (start < stop) ? start : stop;
+  const max = (stop > start) ? stop : start;
+
+  const span = max - min;
+
+  const values = [...Array(steps)].map((value, index) => {
+    return min + ((span / (steps - 1)) * index);
+  });
+
+  return (start > stop) ? values.reverse() : values;
+};
 
 export function createLayers(options = {}) {
   const {
