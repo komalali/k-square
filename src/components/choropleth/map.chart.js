@@ -292,7 +292,7 @@ export default class MapChart extends MapBase {
       .attr('class', d => this.classes(d).join(' '))
       .call(this.styles.bind(this));
 
-    // this.resize(this.settings.width, this.settings.height);
+    this.resize(this.settings.width, this.settings.height);
 
     this.nodes = this.paths;
 
