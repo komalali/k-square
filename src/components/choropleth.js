@@ -13,7 +13,7 @@ import {
   bindAll,
   merge,
 } from 'lodash';
-import { extractFeatures } from '../utils';
+import { extractFeatures } from './choropleth/utils/index';
 
 export default class Choropleth {
   constructor(props) {

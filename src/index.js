@@ -2,14 +2,14 @@ import * as topojson from 'topojson';
 import { csv, json } from 'd3';
 import './index.css';
 
-import Map from './components/map';
-import { createLayers, processTopojson } from './utils';
+import Map from './components/choropleth/map';
+import { createLayers, processTopojson } from './components/choropleth/utils/index';
 
-async function fetchTopoJson(topologyUrl) {
+function fetchTopoJson(topologyUrl) {
   return json(topologyUrl);
 }
 
-async function fetchData(dataUrl) {
+function fetchData(dataUrl) {
   return csv(dataUrl, datum => ({
     location_id: datum.location_id,
     value: +datum.value,
@@ -17,8 +17,8 @@ async function fetchData(dataUrl) {
 }
 
 async function fetch() {
-  const dataset = await fetchData('src/resources/fakedata.csv');
-  const topology = await fetchTopoJson('src/resources/world-topo.json');
+  const dataset = await fetchData('src/components/choropleth/resources/fakedata.csv');
+  const topology = await fetchTopoJson('src/components/choropleth/resources/world-topo.json');
   return {
     dataset,
     topology,

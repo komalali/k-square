@@ -6,9 +6,9 @@ import {
   memoize,
 } from 'lodash';
 
-import MapChart from './choropleth/map.chart';
-import MapLegend from './choropleth/map.legend';
-// import MapFilter from './choropleth/map.filter';
+import MapChart from './map.chart';
+import MapLegend from './map.legend';
+// import MapFilter from './map.filter';
 
 export default class Map {
   constructor(settings, topology) {
