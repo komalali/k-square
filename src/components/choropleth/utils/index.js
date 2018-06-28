@@ -198,3 +198,5 @@ export function processTopojson(topology) {
     return results;
   }, {});
 }
+
+export { default as format } from './format';
