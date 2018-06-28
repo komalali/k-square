@@ -37,12 +37,12 @@ fetch()
   .then(({ dataset, topology }) => {
     const presimplifiedTopojson = topojson.presimplify(topology);
     processTopojson(presimplifiedTopojson);
-    const map = new Map(mapSettings, presimplifiedTopojson);
+    window.map = new Map(mapSettings, presimplifiedTopojson);
 
     const mapRenderOptions = {
       layers: createLayers({ detail: 1, dataset, topo: presimplifiedTopojson }),
     };
 
-    map.render(mapRenderOptions);
+    window.map.render(mapRenderOptions);
   });
 
