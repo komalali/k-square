@@ -40,7 +40,7 @@ fetch()
     const map = new Map(mapSettings, presimplifiedTopojson);
 
     const mapRenderOptions = {
-      layers: createLayers({ detail: 2, dataset, topo: presimplifiedTopojson }),
+      layers: createLayers({ detail: 1, dataset, topo: presimplifiedTopojson }),
     };
 
     map.render(mapRenderOptions);
