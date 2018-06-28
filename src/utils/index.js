@@ -34,7 +34,7 @@ export function createLayers(options = {}) {
       let max = -Infinity;
 
       const data = dataset.reduce((geoResult, { location_id, value }) => {
-        geoResult[location_id] = value;
+        geoResult[`${location_id}`] = { value };
 
         if (value < min) min = value;
         if (value > max) max = value;

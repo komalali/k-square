@@ -35,15 +35,12 @@ const mapSettings = {
 
 fetch()
   .then(({ dataset, topology }) => {
-    console.log(topology);
-    console.log(dataset);
-    processTopojson(topology);
-    console.log(topology);
-    console.log(createLayers({ detail: 1, dataset, topo: topology }));
-    const map = new Map(mapSettings, topology);
+    const presimplifiedTopojson = topojson.presimplify(topology);
+    processTopojson(presimplifiedTopojson);
+    const map = new Map(mapSettings, presimplifiedTopojson);
 
     const mapRenderOptions = {
-      layers: createLayers({ detail: 1, dataset, topo: topology }),
+      layers: createLayers({ detail: 2, dataset, topo: presimplifiedTopojson }),
     };
 
     map.render(mapRenderOptions);

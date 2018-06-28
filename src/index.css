@@ -64,3 +64,7 @@ svg {
     stroke: lightblue;
     stroke-width: 1px;
 }
+
+.borders{
+    fill: none;
+}

@@ -48,7 +48,7 @@ export default class MapChart extends MapBase {
         })).bounds,
       simplify: d3.geoTransform({
         point(x, y, z) {
-          if (z >= projection.area) {
+          if (z === undefined || z >= projection.area) {
             this.stream.point(
               (x * projection.scale) + projection.translate[0],
               (y * projection.scale) + projection.translate[1],
