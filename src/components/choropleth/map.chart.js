@@ -39,7 +39,7 @@ export default class MapChart extends MapBase {
       area: 1,
       scale: 1,
       translate: [0, 0],
-      clipExtent: d3.geoClipExtent(),
+      transform: d3.geoIdentity(),
       bounds: d3.geoPath()
         .projection(d3.geoTransform({
           point(x, y, z) {
@@ -59,7 +59,7 @@ export default class MapChart extends MapBase {
       }),
       path: d3.geoPath().projection({
         stream(s) {
-          return projection.simplify.stream(projection.clipExtent.stream(s));
+          return projection.simplify.stream(projection.transform.stream(s));
         },
       }),
     };
@@ -195,8 +195,10 @@ export default class MapChart extends MapBase {
 
     this.zoomed = d3.zoom()
       .on('zoom', () => {
-        this.projection.scale = this.zoomed.scale();
-        this.projection.translate = this.zoomed.translate();
+        const { x, y, k } = d3.event.transform;
+
+        this.projection.scale = k;
+        this.projection.translate = [x, y];
         this.projection.area = 1 / this.projection.scale / this.projection.scale;
 
         this.settings.zoom.scale = this.projection.scale - this.viewbox.scale;
@@ -336,16 +338,16 @@ export default class MapChart extends MapBase {
 
     this.zoomed.scaleExtent(extent);
 
-    this.projection.clipExtent([[-5, -5], [(width + 10), (height + 10)]]);
+    this.projection.transform.clipExtent([[-5, -5], [(width + 10), (height + 10)]]);
 
     scale = Math.max(extent[0], Math.min(scale, extent[1]));
     translate = this.calcTranslate({ scale, center });
 
     this.svg
-      .attr('height')
-      .attr('width')
-      .call(this.zoomed.translate(translate).scale(scale))
-      .call(this.zoomed.event);
+      .attr('height', height)
+      .attr('width', width)
+      .call(this.zoomed.transform, d3.zoomIdentity.translate(translate[0], translate[1]).scale(scale))
+      .call(this.zoomed);
   }
 
   /**
@@ -355,8 +357,8 @@ export default class MapChart extends MapBase {
    * @access public
    */
   zoom(direction, location) {
-    let scale = this.zoomed.scale();
-    let translate = this.zoomed.translate();
+    let { scale, translate } = this.projection;
+
     const extent = this.zoomed.scaleExtent();
     let center = this.calcCenter({ scale, translate });
 
@@ -385,13 +387,14 @@ export default class MapChart extends MapBase {
           .reduce((results, layer) => results
             .concat(layer.shape.features
               .filter(feature => feature.properties[this.settings.key] &&
-              locations.includes(feature.properties[this.settings.key]))), []);
+                locations.includes(Number(feature.properties[this.settings.key])))), []);
 
         if (features.length) {
           bounds = this.calcBounds(features);
           scale = this.calcScale({ bounds, proportion: 0.6 });
           center = this.calcCenter({ bounds });
         }
+
         break;
       }
       default:
@@ -404,9 +407,6 @@ export default class MapChart extends MapBase {
     this.svg
       .transition()
       .duration(this.settings.animation)
-      .call(this.zoomed
-        .scale(scale)
-        .translate(translate)
-        .event);
+      .call(this.zoomed.transform, d3.zoomIdentity.translate(translate[0], translate[1]).scale(scale));
   }
 }
