@@ -6,8 +6,8 @@ import {
   memoize,
 } from 'lodash';
 
-import MapChart from './map.chart';
-import MapLegend from './map.legend';
+import MapChart from './baseComponents/map.chart';
+import MapLegend from './baseComponents/map.legend';
 
 export default class Map {
   constructor(settings, topology) {

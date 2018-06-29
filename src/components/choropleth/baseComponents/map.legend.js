@@ -1,6 +1,6 @@
 import * as d3 from 'd3';
 
-import * as util from './utils';
+import * as util from '../utils/index';
 import MapBase from './map.base';
 
 /**

@@ -1,7 +1,7 @@
 import * as d3 from 'd3';
 import Emitter from 'events';
 
-import * as util from './utils';
+import * as util from '../utils/index';
 
 /**
  * Initialize a new `MapBase`.
