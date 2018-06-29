@@ -1,8 +1,7 @@
 import * as topojson from 'topojson';
 import { csv, json } from 'd3';
-import Map from '../dist/src/components/choropleth/map';
+import { Choropleth, createLayers, processTopojson } from '@bit/komalali.viz-components.components.choropleth';
 import './index.css';
-import { createLayers, processTopojson } from '../dist/src/components/choropleth/utils';
 
 function fetchTopoJson(topologyUrl) {
   return json(topologyUrl);
@@ -36,7 +35,7 @@ fetch()
   .then(({ dataset, topology }) => {
     const presimplifiedTopojson = topojson.presimplify(topology);
     processTopojson(presimplifiedTopojson);
-    window.map = new Map(mapSettings, presimplifiedTopojson);
+    window.map = new Choropleth(mapSettings, presimplifiedTopojson);
 
     const mapRenderOptions = {
       layers: createLayers({ detail: 1, dataset, topo: presimplifiedTopojson }),

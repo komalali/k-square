@@ -23,7 +23,7 @@
         "trackDir": "src/components/controls",
         "origin": "AUTHORED"
     },
-    "komalali.viz-components/components/choropleth@0.1.0": {
+    "komalali.viz-components/components/choropleth@0.0.2": {
         "files": [
             {
                 "relativePath": "src/components/choropleth/baseComponents/map.base.js",
@@ -44,6 +44,11 @@
                 "relativePath": "src/components/choropleth/baseComponents/map.legend.js",
                 "test": false,
                 "name": "map.legend.js"
+            },
+            {
+                "relativePath": "src/components/choropleth/index.js",
+                "test": false,
+                "name": "index.js"
             },
             {
                 "relativePath": "src/components/choropleth/map.js",
@@ -71,7 +76,7 @@
                 "name": "index.js"
             }
         ],
-        "mainFile": "src/components/choropleth/utils/index.js",
+        "mainFile": "src/components/choropleth/index.js",
         "trackDir": "src/components/choropleth",
         "origin": "AUTHORED"
     },

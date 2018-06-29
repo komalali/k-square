@@ -289,3 +289,4 @@ export default class Map {
   }
 }
 
+export * from './utils';
