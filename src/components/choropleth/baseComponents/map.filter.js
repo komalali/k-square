@@ -6,7 +6,7 @@ import {
   merge,
 } from 'lodash';
 
-import Controls from './controls';
+import Controls from '../../controls';
 
 export default class MapFilter extends Emitter {
   constructor(settings) {

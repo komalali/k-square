@@ -1,9 +1,8 @@
 import * as topojson from 'topojson';
 import { csv, json } from 'd3';
+import Map from '../dist/src/components/choropleth/map';
 import './index.css';
-
-import Map from './components/choropleth/map';
-import { createLayers, processTopojson } from './components/choropleth/utils/index';
+import { createLayers, processTopojson } from '../dist/src/components/choropleth/utils';
 
 function fetchTopoJson(topologyUrl) {
   return json(topologyUrl);
@@ -28,8 +27,8 @@ async function fetch() {
 const mapSettings = {
   chart: {
     container: '#chart',
-    height: 500,
-    width: 1000,
+    height: 600,
+    width: 1100,
   },
 };
 

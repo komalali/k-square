@@ -8,6 +8,7 @@ import {
 
 import MapChart from './baseComponents/map.chart';
 import MapLegend from './baseComponents/map.legend';
+import MapFilter from './baseComponents/map.filter';
 
 export default class Map {
   constructor(settings, topology) {
@@ -101,7 +102,10 @@ export default class Map {
 
   render(options) {
     const {
-      layers, selected, direction, extent,
+      direction,
+      extent,
+      layers,
+      selected,
     } = options;
 
     if (layers) {
