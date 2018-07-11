@@ -1,5 +1,5 @@
 import * as d3 from 'd3';
-import generateRandomDataset from '../utils';
+import generateRandomDataset from './choropleth/utils/index';
 
 export default function createBarChart(properties) {
   d3.select('.chart-title')
