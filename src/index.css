@@ -38,33 +38,11 @@ svg {
     overflow: hidden;
 }
 
-.mesh {
-    stroke: lightblue;
-    stroke-width: 1px;
-    fill:white;
-}
-
-.country {
-    stroke: none;
-    fill:none;
-    pointer-events: fill;
-}
-
-.dispute {
-    stroke: none;
+.borders {
     fill: none;
+    stroke: black;
 }
 
-.subnat {
-    stroke: none;
-    fill: none;
-}
-
-.active {
-    stroke: lightblue;
-    stroke-width: 1px;
-}
-
-.borders{
-    fill: none;
+.layer:not(.layer-borders) .location-path.no-data {
+    fill: lightgray;
 }

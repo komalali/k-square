@@ -1,6 +1,6 @@
 import * as topojson from 'topojson';
 import { csv, json } from 'd3';
-import { Choropleth, createLayers, processTopojson } from '@bit/komalali.viz-components.components.choropleth';
+import { Choropleth, createLayers, processTopojson } from './components/choropleth';
 import './index.css';
 
 function fetchTopoJson(topologyUrl) {
